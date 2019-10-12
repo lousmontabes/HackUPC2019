@@ -112,6 +112,23 @@
 
     <script>
 
+      /* Parsing airports */
+      /*
+      function csvJSON(csv){
+
+        var csv = require("csvtojson");
+        csv().fromFile("airports.csv").on("json", function(jsonArrayObj) { 
+          console.log(jsonArrayObj); 
+        });
+      }
+      
+
+      var fs = require("fs");
+      var textByLine = fs.readFileSync("airports.txt").toString().split("\n");
+      console.log(textByLine.length);
+
+      */
+      
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
