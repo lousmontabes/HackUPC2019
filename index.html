@@ -47,6 +47,15 @@
         color: white;
         padding: 2rem;
       }
+      #plane {
+        background-image: url('plane.png');
+        background-size: cover;
+        width: 5rem;
+        height: 5rem;
+        position: absolute;
+        left: calc(50vw - 2.5rem);
+        top: calc(50vh - 2.5rem);
+      }
       .option {
         padding: .5rem 0;
       }
@@ -69,6 +78,7 @@
       <div id="top-bar">
         Where am I going?
       </div>
+      <div id="plane"></div>
       <div id="menu">
         <div class="option">
           Choice 1
@@ -352,12 +362,21 @@
         var offsetDist = Math.sqrt(offsetLat**2 + offsetLng**2);
         var numSteps = offsetDist / STEP_SIZE;
 
+        // Rotate plane image accordingly
+        if (offsetLng === 0) angle = offsetLat > 0 ? 0 : 180
+        else {
+          angle = 90 - (Math.atan(offsetLat / offsetLng) * 180 / Math.PI + (offsetLng < 0 ? 180 : 0));
+        }
+
+        console.log(offsetLat, offsetLng);
+        console.log(angle);
+        document.getElementById('plane').style.transform = 'rotate('+ angle +'deg)';
+
         var i = 0;
         var prevLat = currentCenter.lat();
         var prevLng = currentCenter.lng();
         function move() {
           if (i < numSteps) {
-            console.log(i);
             const newLat = prevLat + offsetLat / numSteps;
             const newLng = prevLng + offsetLng / numSteps;
             prevLat = newLat;
