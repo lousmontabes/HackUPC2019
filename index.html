@@ -6,6 +6,9 @@
     <meta charset="utf-8">
     <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
     <style>
+      * {
+        box-sizing: border-box;
+      }
       /* Always set the map height explicitly to define the size of the div
        * element that contains the map. */
       #map {
@@ -17,23 +20,57 @@
         margin: 0;
         padding: 0;
         font-family: 'VT323';
+        overflow-y: hidden;
       }
       #hud {
-        padding: 2rem;
-        padding-bottom: 4rem;
-        background: rgb(0,0,0);
-        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
-        position: fixed;
+        position: absolute;
+        top: 0;
+        left: 0;
         z-index: 1000;
-        width: vw;
-        height: vh;
+        width: 100vw;
+        height: 100vh;
         color: white;
         font-size: 28px;
+      }
+      #top-bar {
+        padding: 2rem;
+        padding-bottom: 8rem;
+        background: rgb(0,0,0);
+        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+      }
+      #menu {
+        position: absolute;
+        width: 100%;
+        bottom: 0;
+        background: rgba(0,0,0,.5);
+        color: white;
+        padding: 2rem;
+      }
+      .option {
+        padding: .5rem 0;
       }
     </style>
   </head>
   <body>
-    <div id="hud">Where am I going?</div>
+    <div id="hud">
+      <div id="top-bar">
+        Where am I going?
+      </div>
+      <div id="menu">
+        <div class="option">
+          Toronto
+        </div>
+        <div class="option">
+          Adelaide
+        </div>
+        <div class="option">
+          Abu Dhabi
+        </div>
+        <div class="option">
+          Hong Kong
+        </div>
+      </div>
+    </div>
     <div id="map"></div>
     <script>
       var map;
@@ -43,6 +80,13 @@
           zoom: 8
         });
       }
+
+      function moveToLocation(lat, lng){
+        var center = new google.maps.LatLng(lat, lng);
+        // using global variable:
+        map.panTo(center);
+      }
+
     </script>
     <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDim-2UPcMK72UCZ0axwn451hGmCOnB7Dk&callback=initMap"
     async defer></script>
