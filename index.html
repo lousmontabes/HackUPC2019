@@ -16,11 +16,12 @@
       }
       /* Optional: Makes the sample page fill the window. */
       html, body {
-        height: 100%;
+        width: 100vw;
+        height: 100vh;
         margin: 0;
         padding: 0;
         font-family: 'VT323';
-        overflow-y: hidden;
+        overflow: hidden;
         background: black;
       }
       #hud {
@@ -32,6 +33,17 @@
         height: 100vh;
         color: white;
         font-size: 28px;
+      }
+      #progress-bar {
+        background: yellow;
+        height: .2rem;
+        width: 0;
+        position: absolute;
+        top: 0;
+        left: 0;
+        transition: .1s;
+        overflow: hidden;
+        max-width: 100vw;
       }
       #top-bar {
         padding: 2rem;
@@ -45,7 +57,8 @@
         bottom: 0;
         background: rgba(0,0,0,.5);
         color: white;
-        padding: 2rem;
+        padding: .5rem 2rem;
+        padding-bottom: 1rem;
       }
       #plane {
         background-image: url('plane.png');
@@ -75,27 +88,30 @@
   </head>
   <body>
     <div id="hud">
+      <div id="progress-bar"></div>
       <div id="top-bar">
-        Where am I going?
+        <!-- TITLE TEXT -->
       </div>
       <div id="plane"></div>
       <div id="menu">
-        <div class="option">
-          Choice 1
+        <div class="option" id="option0">
+          <!-- CHOICE 1 TEXT -->
         </div>
-        <div class="option">
-          Choice 2
+        <div class="option" id="option1">
+          <!-- CHOICE 2 TEXT -->
         </div>
-        <div class="option">
-          Choice 3
+        <div class="option" id="option2">
+          <!-- CHOICE 3 TEXT -->
         </div>
-        <div class="option">
-          Choice 4
+        <div class="option" id="option3">
+          <!-- CHOICE 4 TEXT -->
         </div>
       </div>
     </div>
     <div id="map"></div>
+
     <script>
+
       var map;
       function initMap() {
         map = new google.maps.Map(document.getElementById('map'), {
@@ -352,8 +368,9 @@
 
       const STEP_SIZE = .1;
       var interval = null;
+      var progress = 0;
 
-      function moveToLocation(lat, lng){
+      function moveToLocation(lat, lng, callback = function(){}){
         var currentCenter = map.getCenter();
         var center = new google.maps.LatLng(lat, lng);
 
@@ -384,22 +401,104 @@
             var center = new google.maps.LatLng(newLat, newLng);
             map.panTo(center);
             i++;
+
+            // Update progress bar
+            progress = i / numSteps;
+            document.getElementById('progress-bar').style.width = Math.ceil(progress * 100) + 'vw';
           } else {
             clearInterval(interval);
+            callback();
           }
         }
 
         interval = setInterval(move, 50);
-
       }
+
+      /* Helpers */
+
+      function shuffle(array) {
+        array.sort(() => Math.random() - 0.5);
+      }
+
+      /* Listeners */
 
       window.addEventListener("load", function() {
         //setTimeout(start, 3000);
+        setUp();
       });
 
+      /* UI */
+
+      function changeTitleText(text) {
+        const titleView = document.getElementById('top-bar');
+        var typeInterval = null;
+        var prevText = "";
+        var i = 0;
+
+        function type() {
+          if (i < text.length) {
+            const newText = prevText + text[i];
+            prevText = newText;
+            titleView.innerHTML = newText;
+            i++;
+          } else {
+            clearInterval(typeInterval);
+            i = 0;
+          }
+        }
+
+        typeInterval = setInterval(type, 50);
+      }
+
+      /* API */
+
+      function getDestination() {
+        return "London";
+      }
+
+      function generateChoices() {
+        choices = ["Barcelona", "Paris", "Athens"];
+        return choices;
+      }
+
+      function getCoords(city) {
+        if (city === 'London') return [51.507, -0.1275];
+      }
+
+      /* Game flow */
+
+      function setUp() {
+        destination = getDestination();
+        choices = generateChoices();
+        choices.push(destination);
+        shuffle(choices);
+        console.log(choices);
+
+        // Populate options menu
+        for (i = 0; i < choices.length; i++) document.getElementById('option' + i).innerHTML = choices[i];
+
+        changeTitleText("Can you guess our destination today?");
+        setTimeout(showCountdown, 3000);
+      }
+
+      function showCountdown() {
+        changeTitleText("3...");
+        setTimeout(function() {changeTitleText("2...")}, 1000);
+        setTimeout(function() {changeTitleText("1...")}, 2000);
+        setTimeout(function() {changeTitleText("Go!")}, 3000);
+        setTimeout(start, 4000);
+      }
+
       function start() {
-        moveToLocation(-40, 2);
-        setTimeout(function() {moveToLocation(-40, 1)}, 3000);
+        const coords = getCoords(destination);
+        console.log(coords);
+        moveToLocation(coords[0], coords[1], function() {
+          next();
+        });
+      }
+
+      function next() {
+        
       }
 
     </script>
