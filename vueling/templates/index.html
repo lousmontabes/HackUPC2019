@@ -207,6 +207,10 @@
 
     <script>
       
+      var music = new Audio('static/music.wav');
+      var hitSound = new Audio('static/hit.wav');
+      var missSound = new Audio('static/miss.wav');
+
       /* Airports */
       var airports;
 
@@ -467,11 +471,12 @@
       }
 
       const STEP_SIZE = .1;
-      const NUM_ROUNDS = 5;
+      const NUM_ROUNDS = 10;
       var round = 0;
       var interval = null;
       var progress = 0;
       var clickedOption = false;
+      var startup = true;
 
       var score = 0;
       var chainMultiplier = 1;
@@ -522,7 +527,11 @@
           } else {
             clearInterval(interval);
             $("#marker").addClass('visible');
-            $("#option" + answer).addClass('timeout');
+            if (!clickedOption) {
+              missSound.play();
+              $("#option" + answer).addClass('timeout');
+              clickedOption = true;
+            }
             setTimeout(callback, 3000);
           }
         }
@@ -542,6 +551,7 @@
       window.addEventListener("load", function() {
         $.getJSON('/airports/', function(data) {
           airports = data;
+          music.play();
           changeTitleText("Let's go on a trip!");
           setTimeout(function () {changeTitleText("Can you guess our next destination?")}, 2000);
           setTimeout(setUp, 3000);
@@ -589,7 +599,8 @@
         destination = choices[answer];
 
         setTimeout(() => {$("#marker").css("backgroundImage", `url(${airports[destination].URL})`)}, 200);
-        setTimeout(showCountdown, 2000);
+        if (startup) setTimeout(showCountdown, 2000);
+        else start();
       }
 
       function showCountdown() {
@@ -610,6 +621,7 @@
       }
 
       function restart() {
+        startup = false;
         if (round < NUM_ROUNDS) {
           clickedOption = false;
           setProgress(0);
@@ -628,11 +640,13 @@
         if (!clickedOption) {
           const view = $('#option' + i);
           if (i == answer) {
+            hitSound.play();
             view.addClass('correct');
             updateScore();
             chainMultiplier = Math.max(1.3, chainMultiplier + .1);
             if (round == NUM_ROUNDS - 1) finalMultiplier = 2; 
           } else {
+            missSound.play();
             view.addClass('incorrect');
             $("#option" + answer).addClass('timeout');
             chainMultiplier = 1;
