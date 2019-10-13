@@ -100,11 +100,42 @@
       .gmnoprint div {
           background:none !important;
       }
+      #marker {
+        width: 6em;
+        height: 6em;
+        position: absolute;
+        left: calc(50vw - 3em);
+        top: calc(37.5vh - 5em);
+        background-size: cover;
+        background-position: center;
+        border-radius: 3em;
+        border: .2em solid white;
+        transition: .2s;
+        opacity: 0;
+        transform: scale(.75);
+      }
+      #marker.visible {
+        transform: scale(1);
+        opacity: 1;
+      }
+      #marker::after {
+        content: '';
+        position: absolute;
+        left: 38%;
+        top: 100%;
+        width: 0;
+        height: 0;
+        border-left: 20px solid transparent;
+        border-right: 20px solid transparent;
+        border-top: 20px solid white;
+        clear: both;
+      }
     </style>
   </head>
   <body>
     <div id="hud">
       <div id="progress-bar"></div>
+      <div id="marker"></div>
       <div id="top-bar">
         <!-- TITLE TEXT -->
       </div>
@@ -396,6 +427,11 @@
       var interval = null;
       var progress = 0;
 
+      function setProgress(i) {
+        progress = i;
+        document.getElementById('progress-bar').style.width = Math.ceil(progress * 100) + 'vw';
+      }
+
       function moveToLocation(lat, lng, callback = function(){}){
         var currentCenter = map.getCenter();
         var center = new google.maps.LatLng(lat, lng);
@@ -425,11 +461,13 @@
             i++;
 
             // Update progress bar
-            progress = i / numSteps;
-            document.getElementById('progress-bar').style.width = Math.ceil(progress * 100) + 'vw';
+            setProgress(i / numSteps);
+
           } else {
             clearInterval(interval);
-            callback();
+            $("#marker").addClass('visible');
+            $("#option" + answer).addClass('correct');
+            setTimeout(callback, 3000);
           }
         }
 
@@ -492,10 +530,8 @@
         answer = Math.floor(Math.random() * 4);
         destination = choices[answer];
 
-        // Populate options menu
-        for (i = 0; i < choices.length; i++) document.getElementById('option' + i).innerHTML = choices[i];
-
-        setTimeout(showCountdown, 1000);
+        setTimeout(() => {$("#marker").css("backgroundImage", `url(${airports[destination].URL})`)}, 200);
+        setTimeout(showCountdown, 2000);
       }
 
       function showCountdown() {
@@ -510,13 +546,15 @@
 
       function start() {
         const coords = getCoords(destination);
-        console.log(coords);
-        moveToLocation(coords[0], coords[1], function() {
-          restart();
-        });
+        // Populate options menu
+        for (i = 0; i < choices.length; i++) document.getElementById('option' + i).innerHTML = choices[i];
+        moveToLocation(coords[0], coords[1], restart);
       }
 
       function restart() {
+        setProgress(0);
+        $("#marker").removeClass('visible');
+        $(".option").html("");
         $(".option").removeClass("correct");
         $(".option").removeClass("incorrect");
         setUp();
