@@ -6,7 +6,7 @@ bleach==3.0.2
 certifi==2018.11.29
 cffi==1.10.0
 cloudpickle==0.6.1
-conda==4.5.11
+conda==4.3.16
 cryptography==2.4.1
 cycler==0.10.0
 dask==0.20.2
