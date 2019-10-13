@@ -1,3 +1,5 @@
+{% load static %}
+
 <!DOCTYPE html>
 <html>
   <head>
@@ -61,7 +63,7 @@
         padding-bottom: 1rem;
       }
       #plane {
-        background-image: url('plane.png');
+        background-image: url("{% static 'plane.png' %}");
         background-size: cover;
         width: 5rem;
         height: 5rem;
@@ -72,8 +74,22 @@
       .option {
         padding: .5rem 0;
       }
-      .option:hover {
+      .option.correct {
         color: yellow;
+      }
+      .option.correct::after {
+        content: ' 👍';
+        font-size: .6em;
+      }
+      .option.incorrect {
+        color: red;
+      }
+      .option.incorrect::after {
+        content: ' ❌';
+      }
+      .option::after {
+        font-size: .5em;
+        margin-left: .5em;
       }
       a[href^="http://maps.google.com/maps"]{display:none !important}
       a[href^="https://maps.google.com/maps"]{display:none !important}
@@ -94,24 +110,32 @@
       </div>
       <div id="plane"></div>
       <div id="menu">
-        <div class="option" id="option0">
+        <div class="option" id="option0" onclick="optionClicked(0)">
           <!-- CHOICE 1 TEXT -->
         </div>
-        <div class="option" id="option1">
+        <div class="option" id="option1" onclick="optionClicked(1)">
           <!-- CHOICE 2 TEXT -->
         </div>
-        <div class="option" id="option2">
+        <div class="option" id="option2" onclick="optionClicked(2)">
           <!-- CHOICE 3 TEXT -->
         </div>
-        <div class="option" id="option3">
+        <div class="option" id="option3" onclick="optionClicked(3)">
           <!-- CHOICE 4 TEXT -->
         </div>
       </div>
     </div>
     <div id="map"></div>
 
+    <script
+  src="https://code.jquery.com/jquery-3.4.1.min.js"
+  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+  crossorigin="anonymous"></script>
+
     <script>
       
+      /* Airports */
+      var airports;
+
       /* Google Maps */
 
       var map;
@@ -383,12 +407,8 @@
 
         // Rotate plane image accordingly
         if (offsetLng === 0) angle = offsetLat > 0 ? 0 : 180
-        else {
-          angle = 90 - (Math.atan(offsetLat / offsetLng) * 180 / Math.PI + (offsetLng < 0 ? 180 : 0));
-        }
+        else angle = 90 - (Math.atan(offsetLat / offsetLng) * 180 / Math.PI + (offsetLng < 0 ? 180 : 0));
 
-        console.log(offsetLat, offsetLng);
-        console.log(angle);
         document.getElementById('plane').style.transform = 'rotate('+ angle +'deg)';
 
         var i = 0;
@@ -419,14 +439,17 @@
       /* Helpers */
 
       function shuffle(array) {
-        array.sort(() => Math.random() - 0.5);
+        return array.sort(() => Math.random() - 0.5);
       }
 
       /* Listeners */
 
       window.addEventListener("load", function() {
-        //setTimeout(start, 3000);
-        setUp();
+        $.getJSON('/airports/', function(data) {
+          airports = data;
+          changeTitleText("Let's go on a trip!");
+          setUp();
+        });
       });
 
       /* UI */
@@ -454,54 +477,59 @@
 
       /* API */
 
-      function getDestination() {
-        return "London";
-      }
-
       function generateChoices() {
-        choices = ["Barcelona", "Paris", "Athens"];
-        return choices;
+        return shuffle(Object.keys(airports)).slice(0, 4);
       }
 
       function getCoords(city) {
-        if (city === 'London') return [51.507, -0.1275];
+        return [airports[city].Latitude, airports[city].Longitude];
       }
 
       /* Game flow */
 
       function setUp() {
-        destination = getDestination();
         choices = generateChoices();
-        choices.push(destination);
-        shuffle(choices);
-        console.log(choices);
+        answer = Math.floor(Math.random() * 4);
+        destination = choices[answer];
 
         // Populate options menu
         for (i = 0; i < choices.length; i++) document.getElementById('option' + i).innerHTML = choices[i];
 
-        changeTitleText("Can you guess our destination today?");
-        setTimeout(showCountdown, 3000);
+        setTimeout(showCountdown, 1000);
       }
 
       function showCountdown() {
-        changeTitleText("3...");
-        setTimeout(function() {changeTitleText("2...")}, 1000);
-        setTimeout(function() {changeTitleText("1...")}, 2000);
-        setTimeout(function() {changeTitleText("Go!")}, 3000);
-        setTimeout(function() {changeTitleText(" ")}, 4000);
-        setTimeout(start, 4000);
+        changeTitleText("Can you guess our next destination?");
+        setTimeout(function() {changeTitleText("3...")}, 3000);
+        setTimeout(function() {changeTitleText("2...")}, 4000);
+        setTimeout(function() {changeTitleText("1...")}, 5000);
+        setTimeout(function() {changeTitleText("Go!")}, 6000);
+        setTimeout(start, 6000);
+        setTimeout(function() {changeTitleText(" ")}, 7000);
       }
 
       function start() {
         const coords = getCoords(destination);
         console.log(coords);
         moveToLocation(coords[0], coords[1], function() {
-          next();
+          restart();
         });
       }
 
-      function next() {
+      function restart() {
+        $(".option").removeClass("correct");
+        $(".option").removeClass("incorrect");
+        setUp();
+      }
 
+      function optionClicked(i) {
+        const view = $('#option' + i);
+        if (i == answer) {
+          view.addClass('correct');
+          
+        } else {
+          view.addClass('incorrect');
+        }
       }
 
     </script>
