@@ -4,10 +4,13 @@
 <html>
   <head>
     <title>TraveLing</title>
-    <meta name="viewport" content="initial-scale=1.0">
-    <meta charset="utf-8">
+    <meta name="viewport" content="initial-scale=1.0" />
+    <meta charset="utf-8" />
     <meta name="apple-mobile-web-app-capable" content="yes" />
-    <link href="https://fonts.googleapis.com/css?family=VT323&display=swap" rel="stylesheet">
+    <link
+      href="https://fonts.googleapis.com/css?family=VT323&display=swap"
+      rel="stylesheet"
+    />
     <style>
       * {
         box-sizing: border-box;
@@ -18,12 +21,13 @@
         height: 100%;
       }
       /* Optional: Makes the sample page fill the window. */
-      html, body {
+      html,
+      body {
         width: 100vw;
         height: 100vh;
         margin: 0;
         padding: 0;
-        font-family: 'VT323';
+        font-family: "VT323";
         overflow: hidden;
         background: black;
       }
@@ -39,28 +43,32 @@
       }
       #progress-bar {
         background: yellow;
-        height: .2rem;
+        height: 0.2rem;
         width: 0;
         position: absolute;
         top: 0;
         left: 0;
-        transition: .1s;
+        transition: 0.1s;
         overflow: hidden;
         max-width: 100vw;
       }
       #top-bar {
         padding: 2rem;
         padding-bottom: 8rem;
-        background: rgb(0,0,0);
-        background: linear-gradient(180deg, rgba(0,0,0,1) 0%, rgba(0,0,0,0) 100%);
+        background: rgb(0, 0, 0);
+        background: linear-gradient(
+          180deg,
+          rgba(0, 0, 0, 1) 0%,
+          rgba(0, 0, 0, 0) 100%
+        );
       }
       #menu {
         position: absolute;
         width: 100%;
         bottom: 0;
-        background: rgba(0,0,0,.5);
+        background: rgba(0, 0, 0, 0.5);
         color: white;
-        padding: .5rem 2rem;
+        padding: 0.5rem 2rem;
         padding-bottom: 1rem;
       }
       #plane {
@@ -73,7 +81,7 @@
         top: calc(50vh - 2.5rem);
       }
       .option {
-        padding: .5rem 0;
+        padding: 0.5rem 0;
       }
       .option.correct {
         color: yellow;
@@ -82,27 +90,33 @@
         color: yellow;
       }
       .option.correct::after {
-        content: ' 👍';
-        font-size: .6em;
+        content: " 👍";
+        font-size: 0.6em;
       }
       .option.incorrect {
         color: red;
       }
       .option.incorrect::after {
-        content: ' ❌';
+        content: " ❌";
       }
       .option::after {
-        font-size: .5em;
-        margin-left: .5em;
+        font-size: 0.5em;
+        margin-left: 0.5em;
       }
-      a[href^="http://maps.google.com/maps"]{display:none !important}
-      a[href^="https://maps.google.com/maps"]{display:none !important}
+      a[href^="http://maps.google.com/maps"] {
+        display: none !important;
+      }
+      a[href^="https://maps.google.com/maps"] {
+        display: none !important;
+      }
 
-      .gmnoprint a, .gmnoprint span, .gm-style-cc {
-          display:none;
+      .gmnoprint a,
+      .gmnoprint span,
+      .gm-style-cc {
+        display: none;
       }
       .gmnoprint div {
-          background:none !important;
+        background: none !important;
       }
       #marker {
         width: 6em;
@@ -113,18 +127,18 @@
         background-size: cover;
         background-position: center;
         border-radius: 3em;
-        border: .2em solid white;
-        transition: .2s;
+        border: 0.2em solid white;
+        transition: 0.2s;
         opacity: 0;
-        transform: scale(.75);
-        box-shadow: 0 35px 35px rgba(0,0,0,.5)
+        transform: scale(0.75);
+        box-shadow: 0 35px 35px rgba(0, 0, 0, 0.5);
       }
       #marker.visible {
         transform: scale(1);
         opacity: 1;
       }
       #marker::after {
-        content: '';
+        content: "";
         position: absolute;
         left: 38%;
         top: 100%;
@@ -149,7 +163,7 @@
         position: absolute;
         left: 0;
         top: 0;
-        background: rgba(0,0,0,.85);
+        background: rgba(0, 0, 0, 0.85);
         z-index: 5000;
         visibility: hidden;
         color: white;
@@ -192,24 +206,22 @@
       </div>
     </div>
     <div id="end-screen">
-      <div id="end-score">
-        Your score: <span id="score-text"></span>
-      </div>
-      <br/>
+      <div id="end-score">Your score: <span id="score-text"></span></div>
+      <br />
       <div id="play-again" onclick="newGame()">Take another trip</div>
     </div>
     <div id="map"></div>
 
     <script
-  src="https://code.jquery.com/jquery-3.4.1.min.js"
-  integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
-  crossorigin="anonymous"></script>
+      src="https://code.jquery.com/jquery-3.4.1.min.js"
+      integrity="sha256-CSXorXvZcTkaix6Yvo6HppcZGetbYMGWSFlBw8HfCJo="
+      crossorigin="anonymous"
+    ></script>
 
     <script>
-      
-      var music = new Audio('static/music.wav');
-      var hitSound = new Audio('static/hit.wav');
-      var missSound = new Audio('static/miss.wav');
+      var music = new Audio("static/music.wav");
+      var hitSound = new Audio("static/hit.wav");
+      var missSound = new Audio("static/miss.wav");
 
       /* Airports */
       var airports;
@@ -218,251 +230,251 @@
 
       var map;
       function initMap() {
-        map = new google.maps.Map(document.getElementById('map'), {
-          center: {lat: 41.397, lng: 2},
-          zoom: 7,
+        map = new google.maps.Map(document.getElementById("map"), {
+          center: { lat: 41.397, lng: 2 },
+          zoom: 6,
           disableDefaultUI: true,
           /* Styling using night theme */
           styles: [
             {
-              "elementType": "geometry",
-              "stylers": [
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#212121"
+                  color: "#212121"
                 }
               ]
             },
             {
-              "elementType": "labels",
-              "stylers": [
+              elementType: "labels",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "elementType": "labels.icon",
-              "stylers": [
+              elementType: "labels.icon",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "elementType": "labels.text.fill",
-              "stylers": [
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#757575"
+                  color: "#757575"
                 }
               ]
             },
             {
-              "elementType": "labels.text.stroke",
-              "stylers": [
+              elementType: "labels.text.stroke",
+              stylers: [
                 {
-                  "color": "#212121"
+                  color: "#212121"
                 }
               ]
             },
             {
-              "featureType": "administrative",
-              "elementType": "geometry",
-              "stylers": [
+              featureType: "administrative",
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#757575"
+                  color: "#757575"
                 }
               ]
             },
             {
-              "featureType": "administrative.country",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "administrative.country",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#9e9e9e"
+                  color: "#9e9e9e"
                 }
               ]
             },
             {
-              "featureType": "administrative.land_parcel",
-              "stylers": [
+              featureType: "administrative.land_parcel",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "administrative.locality",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "administrative.locality",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#bdbdbd"
+                  color: "#bdbdbd"
                 }
               ]
             },
             {
-              "featureType": "administrative.neighborhood",
-              "stylers": [
+              featureType: "administrative.neighborhood",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "poi",
-              "elementType": "labels.text",
-              "stylers": [
+              featureType: "poi",
+              elementType: "labels.text",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "poi",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "poi",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#757575"
+                  color: "#757575"
                 }
               ]
             },
             {
-              "featureType": "poi.business",
-              "stylers": [
+              featureType: "poi.business",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "poi.park",
-              "elementType": "geometry",
-              "stylers": [
+              featureType: "poi.park",
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#181818"
+                  color: "#181818"
                 }
               ]
             },
             {
-              "featureType": "poi.park",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "poi.park",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#616161"
+                  color: "#616161"
                 }
               ]
             },
             {
-              "featureType": "poi.park",
-              "elementType": "labels.text.stroke",
-              "stylers": [
+              featureType: "poi.park",
+              elementType: "labels.text.stroke",
+              stylers: [
                 {
-                  "color": "#1b1b1b"
+                  color: "#1b1b1b"
                 }
               ]
             },
             {
-              "featureType": "road",
-              "stylers": [
+              featureType: "road",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "road",
-              "elementType": "geometry.fill",
-              "stylers": [
+              featureType: "road",
+              elementType: "geometry.fill",
+              stylers: [
                 {
-                  "color": "#2c2c2c"
+                  color: "#2c2c2c"
                 }
               ]
             },
             {
-              "featureType": "road",
-              "elementType": "labels.icon",
-              "stylers": [
+              featureType: "road",
+              elementType: "labels.icon",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "road",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "road",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#8a8a8a"
+                  color: "#8a8a8a"
                 }
               ]
             },
             {
-              "featureType": "road.arterial",
-              "elementType": "geometry",
-              "stylers": [
+              featureType: "road.arterial",
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#373737"
+                  color: "#373737"
                 }
               ]
             },
             {
-              "featureType": "road.highway",
-              "elementType": "geometry",
-              "stylers": [
+              featureType: "road.highway",
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#3c3c3c"
+                  color: "#3c3c3c"
                 }
               ]
             },
             {
-              "featureType": "road.highway.controlled_access",
-              "elementType": "geometry",
-              "stylers": [
+              featureType: "road.highway.controlled_access",
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#4e4e4e"
+                  color: "#4e4e4e"
                 }
               ]
             },
             {
-              "featureType": "road.local",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "road.local",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#616161"
+                  color: "#616161"
                 }
               ]
             },
             {
-              "featureType": "transit",
-              "stylers": [
+              featureType: "transit",
+              stylers: [
                 {
-                  "visibility": "off"
+                  visibility: "off"
                 }
               ]
             },
             {
-              "featureType": "transit",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "transit",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#757575"
+                  color: "#757575"
                 }
               ]
             },
             {
-              "featureType": "water",
-              "elementType": "geometry",
-              "stylers": [
+              featureType: "water",
+              elementType: "geometry",
+              stylers: [
                 {
-                  "color": "#000000"
+                  color: "#000000"
                 }
               ]
             },
             {
-              "featureType": "water",
-              "elementType": "labels.text.fill",
-              "stylers": [
+              featureType: "water",
+              elementType: "labels.text.fill",
+              stylers: [
                 {
-                  "color": "#3d3d3d"
+                  color: "#3d3d3d"
                 }
               ]
             }
@@ -470,7 +482,7 @@
         });
       }
 
-      const STEP_SIZE = .1;
+      const STEP_SIZE = 0.1;
       const NUM_ROUNDS = 10;
       var round = 0;
       var interval = null;
@@ -488,10 +500,11 @@
 
       function setProgress(i) {
         progress = i;
-        document.getElementById('progress-bar').style.width = Math.ceil(progress * 100) + 'vw';
+        document.getElementById("progress-bar").style.width =
+          Math.ceil(progress * 100) + "vw";
       }
 
-      function moveToLocation(lat, lng, callback = function(){}){
+      function moveToLocation(lat, lng, callback = function() {}) {
         var currentCenter = map.getCenter();
         var center = new google.maps.LatLng(lat, lng);
         currentlyMovingTowards = center;
@@ -499,14 +512,19 @@
 
         var offsetLat = center.lat() - currentCenter.lat();
         var offsetLng = center.lng() - currentCenter.lng();
-        var offsetDist = Math.sqrt(offsetLat**2 + offsetLng**2);
+        var offsetDist = Math.sqrt(offsetLat ** 2 + offsetLng ** 2);
         var numSteps = offsetDist / STEP_SIZE;
 
         // Rotate plane image accordingly
-        if (offsetLng === 0) angle = offsetLat > 0 ? 0 : 180
-        else angle = 90 - (Math.atan(offsetLat / offsetLng) * 180 / Math.PI + (offsetLng < 0 ? 180 : 0));
+        if (offsetLng === 0) angle = offsetLat > 0 ? 0 : 180;
+        else
+          angle =
+            90 -
+            ((Math.atan(offsetLat / offsetLng) * 180) / Math.PI +
+              (offsetLng < 0 ? 180 : 0));
 
-        document.getElementById('plane').style.transform = 'rotate('+ angle +'deg)';
+        document.getElementById("plane").style.transform =
+          "rotate(" + angle + "deg)";
 
         var i = 0;
         var prevLat = currentCenter.lat();
@@ -523,20 +541,19 @@
 
             // Update progress bar
             setProgress(i / numSteps);
-
           } else {
             clearInterval(interval);
-            $("#marker").addClass('visible');
+            $("#marker").addClass("visible");
             if (!clickedOption) {
               missSound.play();
-              $("#option" + answer).addClass('timeout');
+              $("#option" + answer).addClass("timeout");
               clickedOption = true;
             }
             setTimeout(callback, 3000);
           }
         }
 
-        stepTime = 1000 * ((5 / numSteps) + (STEP_SIZE / 5));
+        stepTime = 1000 * (5 / numSteps + STEP_SIZE / 5);
         interval = setInterval(move, stepTime);
       }
 
@@ -549,11 +566,13 @@
       /* Listeners */
 
       window.addEventListener("load", function() {
-        $.getJSON('/airports/', function(data) {
+        $.getJSON("/airports/", function(data) {
           airports = data;
           music.play();
           changeTitleText("Let's go on a trip!");
-          setTimeout(function () {changeTitleText("Can you guess our next destination?")}, 2000);
+          setTimeout(function() {
+            changeTitleText("Can you guess our next destination?");
+          }, 2000);
           setTimeout(setUp, 3000);
         });
       });
@@ -561,7 +580,7 @@
       /* UI */
 
       function changeTitleText(text) {
-        const titleView = document.getElementById('top-bar');
+        const titleView = document.getElementById("top-bar");
         var typeInterval = null;
         var prevText = "";
         var i = 0;
@@ -598,25 +617,39 @@
         answer = Math.floor(Math.random() * 4);
         destination = choices[answer];
 
-        setTimeout(() => {$("#marker").css("backgroundImage", `url(${airports[destination].URL})`)}, 200);
+        setTimeout(() => {
+          $("#marker").css(
+            "backgroundImage",
+            `url(${airports[destination].URL})`
+          );
+        }, 200);
         if (startup) setTimeout(showCountdown, 2000);
         else start();
       }
 
       function showCountdown() {
         changeTitleText("3...");
-        setTimeout(function() {changeTitleText("2...")}, 1000);
-        setTimeout(function() {changeTitleText("1...")}, 2000);
-        setTimeout(function() {changeTitleText("Go!")}, 3000);
+        setTimeout(function() {
+          changeTitleText("2...");
+        }, 1000);
+        setTimeout(function() {
+          changeTitleText("1...");
+        }, 2000);
+        setTimeout(function() {
+          changeTitleText("Go!");
+        }, 3000);
         setTimeout(start, 3000);
-        setTimeout(function() {changeTitleText(" ")}, 4000);
+        setTimeout(function() {
+          changeTitleText(" ");
+        }, 4000);
       }
 
       function start() {
         const coords = getCoords(destination);
 
         round++;
-        for (i = 0; i < choices.length; i++) document.getElementById('option' + i).innerHTML = choices[i];
+        for (i = 0; i < choices.length; i++)
+          document.getElementById("option" + i).innerHTML = choices[i];
         moveToLocation(coords[0], coords[1], restart);
       }
 
@@ -625,7 +658,7 @@
         if (round < NUM_ROUNDS) {
           clickedOption = false;
           setProgress(0);
-          $("#marker").removeClass('visible');
+          $("#marker").removeClass("visible");
           $(".option").html("");
           $(".option").removeClass("correct");
           $(".option").removeClass("incorrect");
@@ -638,29 +671,29 @@
 
       function optionClicked(i) {
         if (!clickedOption) {
-          const view = $('#option' + i);
+          const view = $("#option" + i);
           if (i == answer) {
             hitSound.play();
-            view.addClass('correct');
+            view.addClass("correct");
             updateScore();
-            chainMultiplier = Math.max(1.3, chainMultiplier + .1);
-            if (round == NUM_ROUNDS - 1) finalMultiplier = 2; 
+            chainMultiplier = Math.max(1.3, chainMultiplier + 0.1);
+            if (round == NUM_ROUNDS - 1) finalMultiplier = 2;
           } else {
             missSound.play();
-            view.addClass('incorrect');
-            $("#option" + answer).addClass('timeout');
+            view.addClass("incorrect");
+            $("#option" + answer).addClass("timeout");
             chainMultiplier = 1;
           }
           clickedOption = true;
           clearInterval(interval);
           map.panTo(currentlyMovingTowards);
-          $("#marker").addClass('visible');
+          $("#marker").addClass("visible");
           setTimeout(currentCallback, 2000);
         }
       }
 
       function updateScore() {
-        score += 100 * (1 - progress**2) * chainMultiplier * finalMultiplier;
+        score += 100 * (1 - progress ** 2) * chainMultiplier * finalMultiplier;
         $("#score").html(Math.round(score));
       }
 
@@ -672,9 +705,11 @@
       function newGame() {
         location.reload();
       }
-
     </script>
-    <script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDim-2UPcMK72UCZ0axwn451hGmCOnB7Dk&callback=initMap"
-    async defer></script>
+    <script
+      src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDim-2UPcMK72UCZ0axwn451hGmCOnB7Dk&callback=initMap"
+      async
+      defer
+    ></script>
   </body>
 </html>
