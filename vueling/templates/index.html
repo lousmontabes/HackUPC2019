@@ -559,7 +559,7 @@
               $("#option" + answer).addClass("timeout");
               clickedOption = true;
             }
-            setTimeout(callback, 2000);
+            setTimeout(callback, 3000);
           }
         }
 
@@ -582,8 +582,8 @@
           changeTitleText("Let's go on a trip!");
           setTimeout(function() {
             changeTitleText("Can you guess our next destination?");
-          }, 2000);
-          setTimeout(setUp, 3000);
+          }, 1500);
+          setTimeout(setUp, 2000);
         });
       });
 
