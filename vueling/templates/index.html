@@ -62,14 +62,28 @@
           rgba(0, 0, 0, 0) 100%
         );
       }
-      #menu {
+      #bottom-panel {
         position: absolute;
         width: 100%;
         bottom: 0;
-        background: rgba(0, 0, 0, 0.5);
         color: white;
+      }
+      #menu {
+        background: rgba(0, 0, 0, 0.5);
         padding: 0.5rem 2rem;
         padding-bottom: 1rem;
+      }
+      #round {
+        padding: 1.5rem 2rem;
+        color: grey;
+        z-index: 1000;
+        display: inline-block;
+      }
+      #score {
+        padding: 1.5rem 2rem;
+        color: yellow;
+        z-index: 1000;
+        float: right;
       }
       #plane {
         background-image: url("{% static 'plane.png' %}");
@@ -149,14 +163,6 @@
         border-top: 20px solid white;
         clear: both;
       }
-      #score {
-        position: absolute;
-        right: 0;
-        bottom: 0;
-        padding: 1.5rem 2rem;
-        color: yellow;
-        z-index: 1000;
-      }
       #end-screen {
         width: 100vw;
         height: 100vh;
@@ -185,23 +191,26 @@
     <div id="hud">
       <div id="progress-bar"><!-- PROGRESS BAR --></div>
       <div id="marker"><!-- CITY IMAGE --></div>
-      <div id="score">0</div>
       <div id="top-bar">
         <!-- TITLE TEXT -->
       </div>
       <div id="plane"><!-- PLANE IMAGE --></div>
-      <div id="menu">
-        <div class="option" id="option0" onclick="optionClicked(0)">
-          <!-- CHOICE 1 TEXT -->
-        </div>
-        <div class="option" id="option1" onclick="optionClicked(1)">
-          <!-- CHOICE 2 TEXT -->
-        </div>
-        <div class="option" id="option2" onclick="optionClicked(2)">
-          <!-- CHOICE 3 TEXT -->
-        </div>
-        <div class="option" id="option3" onclick="optionClicked(3)">
-          <!-- CHOICE 4 TEXT -->
+      <div id="bottom-panel">
+        <div id="round">1 / 10</div>
+        <div id="score">0</div>
+        <div id="menu">
+          <div class="option" id="option0" onclick="optionClicked(0)">
+            <!-- CHOICE 1 TEXT -->
+          </div>
+          <div class="option" id="option1" onclick="optionClicked(1)">
+            <!-- CHOICE 2 TEXT -->
+          </div>
+          <div class="option" id="option2" onclick="optionClicked(2)">
+            <!-- CHOICE 3 TEXT -->
+          </div>
+          <div class="option" id="option3" onclick="optionClicked(3)">
+            <!-- CHOICE 4 TEXT -->
+          </div>
         </div>
       </div>
     </div>
@@ -550,7 +559,7 @@
               $("#option" + answer).addClass("timeout");
               clickedOption = true;
             }
-            setTimeout(callback, 3000);
+            setTimeout(callback, 2000);
           }
         }
 
@@ -648,7 +657,8 @@
       function start() {
         const coords = getCoords(destination);
 
-        round++;
+        increaseRound();
+
         for (i = 0; i < choices.length; i++)
           document.getElementById("option" + i).innerHTML = choices[i];
         moveToLocation(coords[0], coords[1], restart);
@@ -691,6 +701,11 @@
           $("#marker").addClass("visible");
           setTimeout(currentCallback, 2000);
         }
+      }
+
+      function increaseRound() {
+        round++;
+        $("#round").html(round + " / " + NUM_ROUNDS);
       }
 
       function updateScore() {
